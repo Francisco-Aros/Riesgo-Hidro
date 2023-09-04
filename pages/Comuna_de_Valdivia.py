@@ -40,7 +40,7 @@ st.info(
 @st.cache_data()
 def get_data():
     # Cargar el archivo SHP en un objeto GeoDataFrame
-    shp_path = "Localidades_Valdivia_CamionesAljibe.shp"
+    shp_path = "Entidades_Valdivia_CamionesALjibes.shp"
     gdf = gpd.read_file(shp_path)
     # Cargar el segundo archivo SHP en otro objeto GeoDataFrame
     shp2_path = "APRValdivia.shp"
@@ -54,32 +54,30 @@ def get_data():
 # Obtener los datos de los polígonos y puntos
 gdf, gdf_points, gdf_points2 = get_data()  # Corregir nombre de la variable
 
-unique_values = gdf['Fam_afecta'].unique()
+unique_values = gdf['Lt_entrega'].unique()
 print(unique_values)
 
 # Crear un objeto Folium Map centrado en los datos de los polígonos
 m = folium.Map(location=[-39.85, -73.06], zoom_start=10, tiles='Stamen Terrain')
 
-# Definir la paleta de colores para asignar un color único a cada valor único en 'Fam_afecta'
+# Definir la paleta de colores para asignar un color único a cada valor único en 'Lt_entrega'
 color_palette = {
-    1.0: '#ffb4b4', #rosado
-    2.0: '#ffa5a5',   
-    3.0: '#ff9696',   
-    5.0: '#ff8787',   
-    4.0: '#ff7878',  
-    7.0: '#ff6969',   
-    6.0: '#ff5a5a',  
-    13.0: '#ff4b4b',
-    10.0: '#ff3c3c',
-    12.0: '#ff2d2d', 
-    14.0: '#ff1e1e', 
-    42.0: '#ff0f0f', 
-    32.0: '#ff0000',  # Rojo muy intenso
+    1000.0: '#ffb4b4', #rosado
+    2000.0: '#ffa5a5',   
+    2400.0: '#ff9696',   
+    3000.0: '#ff8787',   
+    3200.0: '#ff7878',  
+    9900.0: '#ff6969',   
+    10900.0: '#ff5a5a',  
+    14000.0: '#ff4b4b',
+    15700.0: '#ff3c3c',
+    18400.0: '#ff2d2d',  
+    42700.0: '#ff0000',  # Rojo muy intenso
 }
 
 # Función para asignar colores diferentes a cada atributo
 def style_function(feature):
-    attribute = feature['properties']['Fam_afecta']
+    attribute = feature['properties']['Lt_entrega']
     return {'fillColor': color_palette.get(attribute, '#808081'), 'fillOpacity': 0.7, 'color': 'none'}
 
 # Obtener los datos de los polígonos y puntos
@@ -88,14 +86,14 @@ gdf, gdf_points, gdf_points2 = get_data()
 # Crear un objeto FeatureGroup de Folium para los polígonos
 #poligonos_group = folium.FeatureGroup(name='Zonas de entrega de agua potable mediante camiones aljibes')
 folium.GeoJson(gdf,
-               tooltip=folium.GeoJsonTooltip(fields=['NOM_LOCALI', 'Fam_afecta', 'Lt_entrega'], aliases=['Nombre de localidad', 'Familias Personas afectadas','Litros entregados']),
+               tooltip=folium.GeoJsonTooltip(fields=['NOMBRE_ENT', 'Lt_entrega'], aliases=['Nombre de localidad','Litros entregados semanalmente']),
                style_function=style_function,
                name='Zonas de entrega de agua potable mediante camiones aljibes',
                show= True
                ).add_to(m)
 
 # Crear un objeto FeatureGroup de Folium para los puntos
-#puntos_group = folium.FeatureGroup(name='APR Los Lagos')
+#puntos_group = folium.FeatureGroup(name='APR Valdivia')
 folium.GeoJson(gdf_points,
                tooltip=folium.GeoJsonTooltip(fields=['Nombre__of', 'Beneficiar'], aliases=['Nombre', 'Beneficiarios']),
                name='APR Valdivia',
